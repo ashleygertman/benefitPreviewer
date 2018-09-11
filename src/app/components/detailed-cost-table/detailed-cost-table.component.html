@@ -1,0 +1,43 @@
+<div>
+  <table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>Name</th>
+      <th>Discount(%)</th>
+      <th>Discount($)</th>
+      <th *ngIf="showAnnualCost">Cost (Annual)</th>
+      <th *ngIf="showPaycheckCost">Cost (*Paycheck)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let person of people">
+      <td>{{person.status}}</td>
+      <td>{{person.name}}</td>
+      <td>{{person.discount * 100 }}%</td>
+      <td>${{calculateDiscountInDollars(person)}}</td>
+      <td *ngIf="showAnnualCost">{{formatter.format(person.cost)}}</td>
+      <td *ngIf="showPaycheckCost">{{formatter.format(calculateBenefitCostPerPaycheck(person.cost))}}</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div>Display Cost Per:
+  <label class="checkbox-inline">
+    <input type="checkbox"
+    [checked]="showAnnualCost"
+    (change)="showAnnualCost = !showAnnualCost">Year</label>
+  <label class="checkbox-inline">
+    <input type="checkbox"
+    [checked]="showPaycheckCost"
+    (change)="showPaycheckCost = !showPaycheckCost">Paycheck</label>
+</div>
+<div>
+  <h5 *ngIf="showAnnualCost">Total Cost (Annual): {{formatter.format(calculateTotalBenefitCost())}}</h5>
+  <h5 *ngIf="showPaycheckCost">Total Cost (Paycheck): {{formatter.format(calculateBenefitCostPerPaycheck(calculateTotalBenefitCost()))}}</h5>
+</div>
+<!-- Below works but isn't great and I don't really like it -->
+<h5 >Annual Salary After Benefits: {{formatter.format(calculateAnnualSalaryAfterBenefitCost())}}</h5>
+<h5>*Paycheck After Benefits: {{formatter.format(calculatePaycheckAfterBenefitCost())}}</h5>
+<hr>
+<h5 *ngIf="showPaycheckCost"> {{buildPaycheckDifferenceMessage()}}</h5>
